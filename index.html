@@ -1,38 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculador de porcentajes en peleas ganadas</title>
+    <title>Calculador de porcentajes por peleas ganadas</title>
 </head>
-
 <body>
-<h1>Bienvenido, calculemos porcentajes de victorias por pelea</h1>
-<form id="registroLuchador">
-    <label for="nombre"></label><input id="nombre" type="text" placeholder="Ingrese nombre">
-    <label for="combatesDisputados"></label><input id="combatesDisputados" type="number" placeholder="Ingrese valor">
-    <input type="submit" value="Ingresar">
-</form>
+    <h1>Bienvenido, calculemos el porcentaje de peleas ganadas de un luchador</h1>
+    <form id="Registro">
+        <div>
+            <label for="Nombre">Nombre</label><input type="text" id="nombre" placeholder="nombre">
+        </div>
+        <div>
+            <label for="peleasGanadas">Peleas ganadas</label><input type="number" id="peleasGanadas" placeholder="Peleas ganadas">
+        </div>
+        <div>
+            <label for="totalPeleas">Total de peleas disputadas</label><input type="number" id="totalPeleas" placeholder="Total de peleas">
+        </div>
+    
+        <div id="respuestaPor">
+            
+        </div>
 
-<div id="calcular">
-    <h2>Ganó el combate nº:</h2>
-    <input type="button" value="si">
-    <input type="button" value="no">
-    <p>El porcentaje de victorias es de:</p>
-</div>
+        <input type="submit" value="Calclar e ingresar">
+    </form>
 
-<div id="agregar">
-    <h2>Quiere agregar mas luchadores?</h2>
-    <input type="button" value="si">
-    <input type="button" value="no">
-</div>
+    <div id="secPeleador" style="display: none;">
+        <h2>Luchadores</h2>
+        <div id="listaLuchadores">
+            
+        </div>
+    </div>
 
-<div id="respuesta">
-    <p>El mayor porcentaje por peleas ganadas es es:</p>
-</div>
+    <div id="Agregar">
+        <h2>¿Desea agregar más luchadores?</h2>
+        <input type="button" id="AgSi" value="si">
+        <input type="button" id="AgNo" value="no">
+    </div>
 
-    <script src="./index.js"></script>
+    <div id="RespuestaFinal">
+        
+    </div>
+
+    <script src="./simulador.js"></script>
 </body>
-
 </html>

@@ -1,57 +1,82 @@
-//datos del html
-const RegistroLuchador = document.querySelector ("#RegistroLuchador"); 
-const inputNombre = document.querySelector ("#inputNombre");
-const inputcombatesDisputados = document.querySelector ("#inputcombatesDisputados");
-const inputcalcular = document.querySelector ("#calcular");
-const inputAgregar = document.querySelector ("#agregar");
-const inputrespuesta = docment.querySelector ('#respuesta');
+// variables 
+const formulario = document.querySelector ('#Registro');
+const luchador = document.querySelector ('#nombre');
+const peleasGan = document.querySelector ('#peleasGanadas');
+const totalPeleas = document.querySelector ('#totalPeleas');
+const respPor = document.querySelector ('#respuestaPor');
+const secLucha = document.querySelector ('#secPeleador');
+const ListLuch = document.querySelector('#listaLuchadores');
+const Agregar = document.querySelector ('#Agregar');
+const siAgregar = document.querySelector ('#AgSi');
+const noAgregar = document.querySelector ('#AgNo');
 
-//clase persona con funcion constructora
+const peleadores = JSON.parse(localStorage.getItem('peleadores')) || []
+
 class Persona {
-    constructor(nombre, combatesDisputados, porcentajeDeVictorias) {
-        this.nombre = nombre;
-        this.combatesDisputados = combatesDisputados;
-        this.porcentajeDeVictorias = porcentajeDeVictorias;
+    constructor({nombre, TotaldeCombates, porcentajedeVictorias}) {
+        this.nombre = nombre
+        this.TotaldeCombates = TotaldeCombates
+        this.porcentajedeVictorias = porcentajedeVictorias
     }
 }
 
-function calcularPorcentaje() {
-    const nombre = document.getElementById("nombre").value;
-    const combatesDisputados = parseInt(document.getElementById("combatesDisputados").value);
+//funcion de formulario y calculo de porcentaje
+formulario.onsubmit= e => {
+    e.preventDefault ();
+    const nombre = luchador.value;
+    const CombatesGanados = parseFloat(peleasGan.value);  
+    const TotaldeCombates = parseFloat(totalPeleas.value);
+
+    function Calculo(TotaldeCombates, CombatesGanados) {
+        const Formula = CombatesGanados * 100 / TotaldeCombates;
+        return Formula;
+    };
+
+    const porcentajedeVictorias = Calculo(TotaldeCombates, CombatesGanados);
     
-    let combatesVictorias = 0;
-    for (let num = 1; num <= combatesDisputados; num++) {
-        const resp = document.getElementById(`combate${num}`).checked;
-        if (resp) {
-            combatesVictorias++;
-        }
-    }
+    let porcentT = respPor ; 
+    porcentT.innerHTML = ("<h2>el porcentaje de victoria es de % <h2>" + porcentajedeVictorias); 
+    
+    const persona = new Persona({nombre, TotaldeCombates, porcentajedeVictorias});
 
-    const porcentajeDeVictorias = (combatesVictorias * 100) / combatesDisputados;
+    guardarPersona(persona);
 
-    // Mostrar resultado en HTML
-    const resultadoDiv = document.getElementById("resultado");
-    resultadoDiv.innerHTML = `El porcentaje de victoria es del ${porcentajeDeVictorias.toFixed(2)}% para ${nombre}.`;
+    luchador.value = '';
+    peleasGan.value = '';
+    totalPeleas.value = '';
 
-    // Almacenar datos en Local.Storage
-    const persona = new Persona(nombre, combatesDisputados, porcentajeDeVictorias);
-    let personas = JSON.parse(localStorage.getItem("peleadores")) || [];
-    personas.push(persona);
-    localStorage.setItem("peleadores", JSON.stringify(personas));
+};
+
+//funcion guardar luchadores
+function guardarPersona(persona) {
+    peleadores.push(persona);
+    localStorage.setItem('peleadores', JSON.stringify(peleadores));
+    mostrarPersona();
 }
 
-// Mostrar los resultados 
-window.addEventListener("load", function() {
-    const personas = JSON.parse(localStorage.getItem("peleadores")) || [];
-    const resultadoDiv = document.getElementById("resultado");
+//botones para agregar mas luchadores o no
+siAgregar.addEventListener('click', () => {
+    luchador.value = '';
+    peleasGan.value = '';
+    totalPeleas.value = '';
+    respPor.innerHTML = '';
+});
 
-    if (personas.length > 0) {
-        const mejorPeleador = personas.reduce((max, persona) => {
-            return persona.porcentajeDeVictorias > max.porcentajeDeVictorias ? persona : max;
-        }, personas[0]);
+noAgregar.addEventListener('click', () => {
+    const luchadoresOrdenados = peleadores.slice().sort((a, b) => {
+        if (b.porcentajedeVictorias - a.porcentajedeVictorias !== 0) {
+            return b.porcentajedeVictorias - a.porcentajedeVictorias;
+        } else {
+            return a.nombre.localeCompare(b.nombre);
+        }
+    });
 
-        resultadoDiv.innerHTML = `El luchador con el mayor porcentaje de peleas ganadas es ${mejorPeleador.nombre} con un ${mejorPeleador.porcentajeDeVictorias.toFixed(2)}%.`;
-    } else {
-        resultadoDiv.innerHTML = "Ingrese un luchador";
-    }
+    // respuesta en forma de lista
+    let listaHTML = '<ul>';
+    luchadoresOrdenados.forEach((luchador) => {
+        listaHTML += `<li>${luchador.nombre} - Porcentaje de victorias: ${luchador.porcentajedeVictorias}%</li>`;
+    });
+    listaHTML += '</ul>';
+    secLucha.style.display = 'block';
+    ListLuch.innerHTML = listaHTML;
 });
